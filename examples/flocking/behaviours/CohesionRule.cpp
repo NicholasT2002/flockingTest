@@ -12,17 +12,15 @@ Vector2 CohesionRule::computeForce(const std::vector<Boid*>& neighborhood, Boid*
         {
             if (*itr != boid)
             {
-                cohesionForce.x += (*itr)->transform.position.x;
-                cohesionForce.y += (*itr)->transform.position.y;
+                cohesionForce += ((*itr)->transform.position - boid->transform.position);
             }
         }
-        cohesionForce.x = cohesionForce.x / neighborhood.size();
-        cohesionForce.y = cohesionForce.y / neighborhood.size();
+        cohesionForce = cohesionForce / neighborhood.size();
     }
 
-    cohesionForce.x = cohesionForce.x - boid->transform.position.x;
-    cohesionForce.y = cohesionForce.y - boid->transform.position.y;
-    Vector2::normalized(cohesionForce);
+    //cohesionForce.x = cohesionForce.x - boid->transform.position.x;
+    //cohesionForce.y = cohesionForce.y - boid->transform.position.y;
+    //Vector2::normalized(cohesionForce);
 
-    return cohesionForce;
+    return Vector2::normalized(cohesionForce);
 }

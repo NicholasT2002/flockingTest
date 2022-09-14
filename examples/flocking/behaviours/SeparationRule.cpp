@@ -1,40 +1,41 @@
 #include "SeparationRule.h"
 #include "../gameobjects/Boid.h"
 #include "../gameobjects/World.h"
+#include <iostream>
 
 Vector2 SeparationRule::computeForce(const std::vector<Boid*>& neighborhood, Boid* boid) {
-    //Try to avoid boids too close
-    Vector2 separatingForce = Vector2::zero();
+    if (neighborhood.empty())
+        return Vector2::zero();
+    
+    int closestFlockmates = 0;
+    Vector2 force = Vector2::zero();
 
-    float desiredDistance = desiredMinimalDistance;
-
-    // todo: implement a force that if neighbor(s) enter the radius, moves the boid away from it/them
-    if (!neighborhood.empty()) {
-        Vector2 position = boid->transform.position;
-        int countCloseFlockmates = 0;
-
-    }
-
-    if (!neighborhood.empty())
+    // Find the closest ones
+    for (std::vector<Boid*>::const_iterator itr = neighborhood.begin(); itr != neighborhood.end(); itr++)
     {
-        for (std::vector<Boid*>::const_iterator itr = neighborhood.begin(); itr != neighborhood.end(); itr++)
+        float distance = Vector2::getDistance((*itr)->transform.position, boid->transform.position);
+        if (distance < desiredMinimalDistance)
         {
-            if (*itr != boid)
+            closestFlockmates++;
+
+            //Apply force
+            if (distance < 0.01)
             {
-                separatingForce.x += (*itr)->transform.position.x - boid->transform.position.x;
-                separatingForce.y += (*itr)->transform.position.y - boid->transform.position.y;
+                distance = 0.01;
             }
+
+            force  += (boid->transform.position - (*itr)->transform.position) / distance;
         }
-        separatingForce.x = separatingForce.x / neighborhood.size();
-        separatingForce.y = separatingForce.y / neighborhood.size();
+    }
+    if (closestFlockmates == 0)
+    {
+        return Vector2::zero();
     }
 
-    separatingForce.x *= -1;
-    separatingForce.y *= -1;
+    // Calculate the center of mass
+    force /= closestFlockmates;
 
-    separatingForce = Vector2::normalized(separatingForce);
-
-    return separatingForce;
+    return Vector2::normalized(force);
 }
 
 bool SeparationRule::drawImguiRuleExtra() {
