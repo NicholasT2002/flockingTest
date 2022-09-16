@@ -4,9 +4,12 @@
 #include "../gameobjects/World.h"
 
 Vector2 WindRule::computeForce(const std::vector<Boid*>& neighborhood, Boid* boid) {
-    // todo: add a wind force here
-    // hint: use the windAngle variable
-    return Vector2::zero();
+    Vector2 windForce = Vector2::zero();
+    
+    //Calculate windForce using the current degree angle of the wind
+    windForce = Vector2::Vector2((cos(windAngle)), (sin(windAngle)));
+
+    return Vector2::normalized(windForce);
 }
 
 bool WindRule::drawImguiRuleExtra() {
