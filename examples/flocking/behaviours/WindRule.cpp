@@ -7,7 +7,7 @@ Vector2 WindRule::computeForce(const std::vector<Boid*>& neighborhood, Boid* boi
     Vector2 windForce = Vector2::zero();
     
     //Calculate windForce using the current degree angle of the wind
-    windForce = Vector2::Vector2((cos(windAngle)), (sin(windAngle)));
+    windForce = Vector2((cos(windAngle)), (sin(windAngle)));
 
     return Vector2::normalized(windForce);
 }
